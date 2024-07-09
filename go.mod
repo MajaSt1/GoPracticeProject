@@ -1,3 +1,3 @@
-module example.com/go-project
+module example.com/note
 
 go 1.21.4
