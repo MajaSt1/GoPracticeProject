@@ -110,3 +110,16 @@ func getUserInput(prompt string) string {
 
 	return text
 }
+
+// func add[T any](a, b T) T { //any = interface{}
+// 	return a + b
+// 	// asInt, aIsInt := a.(int)
+// 	// bInt, bIsInt := b.(int)
+// 	// if aIsInt && bIsInt {
+// 	// 	return asInt + bInt
+// 	// }
+// }
+
+func add[T int | float64 | string](a, b T) T {
+	return a + b
+}
