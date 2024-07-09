@@ -14,6 +14,11 @@ type saver interface { //one method + `er` convention
 	Save() error
 }
 
+type outputtable interface { // embedded interfaces
+	saver
+	Display()
+}
+
 func main() {
 	title, content := getNoteData()
 	todoText := getUserInput("Todo text: ")
@@ -30,17 +35,17 @@ func main() {
 		return
 	}
 
-	todo.Display()
-	err = saveData(todo) // don't have to connect interface explicitly to some type (instead must me the same method in this type)!
+	err = outputData(todo) // don't have to connect interface explicitly to some type (instead must me the same method in this type)!
 	if err != nil {
 		return
 	}
 
-	userNote.Display()
-	err = saveData(userNote)
-	if err != nil {
-		return
-	}
+	outputData(userNote)
+}
+
+func outputData(data outputtable) error {
+	data.Display()
+	return saveData(data)
 }
 
 func saveData(data saver) error {
