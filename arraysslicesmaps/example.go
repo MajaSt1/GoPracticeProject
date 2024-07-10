@@ -2,6 +2,12 @@ package arraysslicesmaps
 
 import "fmt"
 
+type product struct {
+	title string
+	id    int
+	price float64
+}
+
 func ShowExample() {
 	var productNames [4]string = [4]string{"A book"}
 	prices := [4]float64{10.99, 9.99, 45.99, 20.0}
@@ -20,4 +26,37 @@ func ShowExample() {
 	highlightedPrices = highlightedPrices[:3]
 	fmt.Println(highlightedPrices)
 	fmt.Println(len(highlightedPrices), cap(highlightedPrices)) // there is always more content available because its a window /slice in memory of parent array
+}
+
+func BuildDynamiLists() {
+	prices := []float64{10.99, 8.99}
+	fmt.Println(prices[0:1])
+	prices[1] = 9.99
+
+	updatedPrices := append(prices, 5.99) // create new array
+	fmt.Println(updatedPrices, prices)
+
+	prices = prices[1:] // reassign and remove feature / there is no built in remove function
+}
+
+func Exercise() {
+	hobbies := [3]string{"drums", "piano", "violin"}
+	fmt.Println(hobbies)
+
+	fmt.Println(hobbies[0])
+	fmt.Println(hobbies[1:])
+
+	mainHobbies := hobbies[0:2]
+	fmt.Println(mainHobbies)
+
+	fmt.Println(cap(mainHobbies), mainHobbies[1:3]) // expanding explicitly from parent array
+
+	goals := []string{"goal1", "goal2"}
+	goals[1] = "goal3"
+	goals = append(goals, "goal4") // create new array and assign to existing one
+	fmt.Println(goals)
+
+	products := []product{{"book", 0, 1.99}, {"door", 1, 109.99}}
+	products = append(products, product{"pen", 2, 3.99})
+	fmt.Println(products)
 }

@@ -7,5 +7,5 @@ import (
 
 func main() {
 	// interfacesgeneric.ShowExample()
-	arraysslicesmaps.ShowExample()
+	arraysslicesmaps.Exercise()
 }
