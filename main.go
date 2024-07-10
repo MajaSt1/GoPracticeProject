@@ -1,9 +1,11 @@
 package main
 
 import (
-	"example.com/note/interfacesgeneric"
+	"example.com/note/arraysslicesmaps"
+	// "example.com/note/interfacesgeneric"
 )
 
 func main() {
-	interfacesgeneric.ShowExample()
+	// interfacesgeneric.ShowExample()
+	arraysslicesmaps.ShowExample()
 }
