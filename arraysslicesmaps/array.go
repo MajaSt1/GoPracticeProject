@@ -76,4 +76,9 @@ func SpecialListMakeFunc() {
 	userNames = append(userNames, "Manuel")
 
 	fmt.Println(userNames)
+
+	for index, value := range userNames {
+		fmt.Println("Index: ",index)
+		fmt.Println("Value: ",value)
+	}
 }

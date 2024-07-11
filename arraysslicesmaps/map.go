@@ -16,12 +16,23 @@ func ShowMapExample() {
 	fmt.Println(websites)
 }
 
+type floatMap map[string]float64
+
+func (m floatMap) output() {
+	fmt.Println(m)
+}
+
 func SpecialMapMakeFunc() {
-	courseRatings := make(map[string]float64, 3) // 3 - pre-allocate memory
+	courseRatings := make(floatMap, 3) // 3 - pre-allocate memory
 
 	// go will have realocate new memory if we will add new items to courseRatings := map[string]float64{}
 	courseRatings["go"] = 4.7
 	courseRatings["react"] = 4.8
 
-	fmt.Println(courseRatings)
+	courseRatings.output()
+
+	for key, value := range courseRatings {
+		fmt.Println("Key: ", key)
+		fmt.Println("Value: ", value)
+	}
 }
