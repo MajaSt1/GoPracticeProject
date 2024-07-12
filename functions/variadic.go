@@ -12,7 +12,7 @@ func ShowVariadicFunc() {
 // variadic - function that can take any amount of parameters (dynamic) - BTS it will merge within a slice for you
 // []int - slice
 func sumup(startingValue int, numbers ...int) int {
-	sum := 0
+	sum := startingValue
 
 	for _, val := range numbers {
 		sum += val // sum = sum + val
