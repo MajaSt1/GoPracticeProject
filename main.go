@@ -8,5 +8,5 @@ import (
 
 func main() {
 	// interfacesgeneric.ShowExample()
-	functions.ShowAnonymousFunc()
+	functions.ShowExampleOfClosure()
 }
