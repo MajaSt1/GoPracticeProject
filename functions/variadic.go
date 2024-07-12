@@ -3,10 +3,12 @@ package functions
 import "fmt"
 
 func ShowVariadicFunc() {
-	// numbers := []int{1, 10, 15}
+	numbers := []int{1, 10, 15}
 	sum := sumup(1, 10, 15, 40, -5)
+	anotherSum := sumup(1, numbers...)
 
 	fmt.Println(sum)
+	fmt.Println(anotherSum)
 }
 
 // variadic - function that can take any amount of parameters (dynamic) - BTS it will merge within a slice for you
