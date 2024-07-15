@@ -1,6 +1,7 @@
 package projectpricecalculator
 
 import (
+	"errors"
 	"fmt"
 
 	// "example.com/note/project-price_calculator/cmdmanager"
@@ -32,10 +33,21 @@ func ShowPriceCalculator() {
 	// 	<-errorChan
 	// } fatal error: all goroutines are asleep - deadlock!
 
-	//similar to switch statement
-	for _, dondoneChan := range doneChans {
-		<-dondoneChan
+	for index := range taxRates {
+		select { //similar to switch statement
+		// the idea behind this: the case that gives us the vaule earlier wins and the other cases discarded
+		case err := <-errorChans[index]:
+			if err != nil {
+				fmt.Println(err)
+			}
+		case <-doneChans[index]:
+			fmt.Println("Done!")
+		}
 	}
+
+	// for _, dondoneChan := range doneChans {
+	// 	<-dondoneChan
+	// }
 }
 
 func (job *TaxIncludedPriceJob) loadData() error {
@@ -58,6 +70,10 @@ func (job *TaxIncludedPriceJob) loadData() error {
 // methods inside process are running in parallel
 func (job *TaxIncludedPriceJob) process(doneChan chan bool, errorChan chan error) {
 	err := job.loadData()
+
+	//simulate error for select statement
+	// errorChan <- errors.New("An error!")
+
 	if err != nil {
 		// return err
 		// commented because of goroutines module, but you can use this function as goroutine and regular function
