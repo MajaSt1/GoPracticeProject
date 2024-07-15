@@ -12,13 +12,15 @@ import (
 func ShowPriceCalculator() {
 	taxRates := []float64{0, 0.07, 0.1, 0.15}
 	doneChans := make([]chan bool, len(taxRates))
+	errorChans := make([]chan error, len(taxRates))
 
 	for index, taxRate := range taxRates {
 		doneChans[index] = make(chan bool)
+		errorChans[index] = make(chan error)
 		fm := filemanager.New("project-price_calculator/prices.txt", fmt.Sprintf("result_%.0f.json", taxRate*100))
 		// cmdm := cmdmanager.New()
 		priceJob := NewTaxIncludedPriceJob(fm, taxRate)
-		go priceJob.process(doneChans[index])
+		go priceJob.process(doneChans[index], errorChans[index])
 
 		// if err != nil {
 		// 	fmt.Println("Could not process job")
@@ -26,6 +28,11 @@ func ShowPriceCalculator() {
 		// }
 	}
 
+	// for _, errorChan := range errorChans {
+	// 	<-errorChan
+	// } fatal error: all goroutines are asleep - deadlock!
+
+	//similar to switch statement
 	for _, dondoneChan := range doneChans {
 		<-dondoneChan
 	}
@@ -49,11 +56,13 @@ func (job *TaxIncludedPriceJob) loadData() error {
 }
 
 // methods inside process are running in parallel
-func (job *TaxIncludedPriceJob) process(doneChan chan bool) {
+func (job *TaxIncludedPriceJob) process(doneChan chan bool, errorChan chan error) {
 	err := job.loadData()
 	if err != nil {
 		// return err
 		// commented because of goroutines module, but you can use this function as goroutine and regular function
+		errorChan <- err
+		return // we must still cancel the execution of further functions
 	}
 
 	result := make(map[string]string)
