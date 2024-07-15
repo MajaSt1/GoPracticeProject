@@ -29,5 +29,10 @@ func ShowGreetExample() {
 	go greet("How are you?", done)
 	go slowGreet("How ... are ... you ...?", done)
 	go greet("I hope you're liking the course!", done)
-	<-done //we waiting for data to come out of the channel and sending it to a void
+
+	// you have to wait for as many values as you have goroutines when you want them to be finished
+	<-done
+	<-done
+	<-done
+	<-done //we waiting for data to come out of the channel and sending it to a void - to go simply means that we're done as soon as we got one value out of this channel.(race condition)
 }
