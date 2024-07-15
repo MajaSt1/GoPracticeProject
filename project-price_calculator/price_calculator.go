@@ -72,7 +72,7 @@ func (job *TaxIncludedPriceJob) process(doneChan chan bool, errorChan chan error
 	err := job.loadData()
 
 	//simulate error for select statement
-	// errorChan <- errors.New("An error!")
+	// errorChan <- errors.New("An error!") + return!
 
 	if err != nil {
 		// return err
