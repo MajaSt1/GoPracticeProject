@@ -11,15 +11,23 @@ import (
 
 func ShowPriceCalculator() {
 	taxRates := []float64{0, 0.07, 0.1, 0.15}
-	for _, taxRate := range taxRates {
+	doneChans := make([]chan bool, len(taxRates))
+
+	for index, taxRate := range taxRates {
+		doneChans[index] = make(chan bool)
 		fm := filemanager.New("project-price_calculator/prices.txt", fmt.Sprintf("result_%.0f.json", taxRate*100))
 		// cmdm := cmdmanager.New()
 		priceJob := NewTaxIncludedPriceJob(fm, taxRate)
-		err := priceJob.process()
-		if err != nil {
-			fmt.Println("Could not process job")
-			fmt.Println(err)
-		}
+		go priceJob.process(doneChans[index])
+
+		// if err != nil {
+		// 	fmt.Println("Could not process job")
+		// 	fmt.Println(err)
+		// }
+	}
+
+	for _, dondoneChan := range doneChans {
+		<-dondoneChan
 	}
 }
 
@@ -40,10 +48,12 @@ func (job *TaxIncludedPriceJob) loadData() error {
 	return nil
 }
 
-func (job *TaxIncludedPriceJob) process() error {
+// methods inside process are running in parallel
+func (job *TaxIncludedPriceJob) process(doneChan chan bool) {
 	err := job.loadData()
 	if err != nil {
-		return err
+		// return err
+		// commented because of goroutines module, but you can use this function as goroutine and regular function
 	}
 
 	result := make(map[string]string)
@@ -53,7 +63,8 @@ func (job *TaxIncludedPriceJob) process() error {
 	}
 
 	job.TaxIncludedPrices = result
-	return job.IOManager.WriteResult(job)
+	job.IOManager.WriteResult(job)
+	doneChan <- true
 }
 
 type TaxIncludedPriceJob struct {
