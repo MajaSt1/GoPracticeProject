@@ -3,7 +3,7 @@ package projectpricecalculator
 import (
 	"fmt"
 
-	"example.com/note/project-price_calculator/cmdmanager"
+	// "example.com/note/project-price_calculator/cmdmanager"
 	"example.com/note/project-price_calculator/conversion"
 	"example.com/note/project-price_calculator/filemanager"
 	"example.com/note/project-price_calculator/iomanager"
@@ -15,30 +15,37 @@ func ShowPriceCalculator() {
 		fm := filemanager.New("project-price_calculator/prices.txt", fmt.Sprintf("result_%.0f.json", taxRate*100))
 		// cmdm := cmdmanager.New()
 		priceJob := NewTaxIncludedPriceJob(fm, taxRate)
-		priceJob.process()
+		err := priceJob.process()
+		if err != nil {
+			fmt.Println("Could not process job")
+			fmt.Println(err)
+		}
 	}
 }
 
-func (job *TaxIncludedPriceJob) loadData() {
+func (job *TaxIncludedPriceJob) loadData() error {
 
 	lines, err := job.IOManager.Readlines()
 	if err != nil {
-		fmt.Println(err)
-		return
+		return err
 	}
 
 	prices, err := conversion.StringsToFloat(lines)
 	if err != nil {
-		fmt.Println(err)
-		return
+		return err
 	}
 
 	// overwritten input prices
 	job.InputPrices = prices
+	return nil
 }
 
-func (job *TaxIncludedPriceJob) process() {
-	job.loadData()
+func (job *TaxIncludedPriceJob) process() error {
+	err := job.loadData()
+	if err != nil {
+		return err
+	}
+
 	result := make(map[string]string)
 	for _, price := range job.InputPrices {
 		taxIncludedPrice := price * (1 + job.TaxRate)
@@ -46,7 +53,7 @@ func (job *TaxIncludedPriceJob) process() {
 	}
 
 	job.TaxIncludedPrices = result
-	job.IOManager.WriteResult(job)
+	return job.IOManager.WriteResult(job)
 }
 
 type TaxIncludedPriceJob struct {
