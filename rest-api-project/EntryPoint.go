@@ -3,11 +3,13 @@ package restapiproject
 import (
 	"net/http"
 
+	"example.com/note/rest-api-project/db"
 	"example.com/note/rest-api-project/models"
 	"github.com/gin-gonic/gin"
 )
 
 func ShowRestApiExample() {
+	db.InitDB()
 	server := gin.Default() // setup preconfigured http server engine
 
 	server.GET("/events", getEvents) // GET, POST, PUT, PATCH, DELETE - function will be invoked by server.GET
