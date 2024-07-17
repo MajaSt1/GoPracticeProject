@@ -18,7 +18,11 @@ func ShowRestApiExample() {
 }
 
 func getEvents(ctx *gin.Context) {
-	events := models.GetAllEvents()
+	events, err := models.GetAllEvents()
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{"message": "Could not fetch events. Try again later."})
+		return
+	}
 	ctx.JSON(http.StatusOK, events)
 }
 
@@ -33,7 +37,11 @@ func createEvent(ctx *gin.Context) {
 	event.ID = 1
 	event.UserID = 1
 
-	event.Save()
+	err = event.Save()
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{"message": "Could not create event. Try again later."})
+		return
+	}
 
 	ctx.JSON(http.StatusCreated, gin.H{"message": "Event created!", "event": event})
 }
