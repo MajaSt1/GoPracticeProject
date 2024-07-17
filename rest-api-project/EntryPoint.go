@@ -2,6 +2,7 @@ package restapiproject
 
 import (
 	"net/http"
+	"strconv"
 
 	"example.com/note/rest-api-project/db"
 	"example.com/note/rest-api-project/models"
@@ -12,7 +13,9 @@ func ShowRestApiExample() {
 	db.InitDB()
 	server := gin.Default() // setup preconfigured http server engine
 
+	//routes
 	server.GET("/events", getEvents) // GET, POST, PUT, PATCH, DELETE - function will be invoked by server.GET
+	server.GET("/events/:id", getEvent)
 	server.POST("/events", createEvent)
 	server.Run(":8080") // localhost:8080
 }
@@ -24,6 +27,24 @@ func getEvents(ctx *gin.Context) {
 		return
 	}
 	ctx.JSON(http.StatusOK, events)
+}
+
+func getEvent(ctx *gin.Context) {
+	eventId, err := strconv.ParseInt(ctx.Param("id"), 10, 64)
+	if err != nil {
+		// Bad request = because it's client fault :)
+		ctx.JSON(http.StatusBadRequest, gin.H{"message": "Could not parse event id."})
+		return
+	}
+
+	event, err := models.GetEventByID(eventId)
+	if err != nil {
+		// Bad request = because it's client fault :)
+		ctx.JSON(http.StatusInternalServerError, gin.H{"message": "Could not fetch event."})
+		return
+	}
+
+	ctx.JSON(http.StatusOK, event)
 }
 
 func createEvent(ctx *gin.Context) {

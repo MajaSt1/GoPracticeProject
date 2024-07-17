@@ -56,3 +56,15 @@ func GetAllEvents() ([]Event, error) {
 	}
 	return events, nil
 }
+
+// !!
+func GetEventByID(id int64) (*Event, error) {
+	query := "SELECT * FROM events WHERE id = ?"
+	row := db.DB.QueryRow(query, id) // we know that we query exactly one row
+	var event Event
+	err := row.Scan(&event.ID, &event.Name, &event.Location, &event.DateTime, &event.UserID)
+	if err != nil {
+		return nil, err // if there is a pointer = *Event we can return nil. If there is Event then we must return empty Event{}
+	}
+	return &event, nil
+}
