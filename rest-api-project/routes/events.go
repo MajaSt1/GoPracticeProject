@@ -43,7 +43,7 @@ func createEvent(ctx *gin.Context) {
 		return
 	}
 
-	err := utils.VerifyToken(token)
+	userId, err := utils.VerifyToken(token)
 	if err != nil {
 		ctx.JSON(http.StatusUnauthorized, gin.H{"message": "Not authorized."})
 		return
@@ -55,6 +55,8 @@ func createEvent(ctx *gin.Context) {
 		ctx.JSON(http.StatusBadRequest, gin.H{"message": "Could not parse request data."})
 		return
 	}
+
+	event.UserID = userId
 
 	err = event.Save()
 	if err != nil {
