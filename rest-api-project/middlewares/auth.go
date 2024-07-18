@@ -20,5 +20,6 @@ func Authenticate(ctx *gin.Context) {
 		return
 	}
 
+	ctx.Set("userId", userId) // data that can be used from context
 	ctx.Next()
 }
