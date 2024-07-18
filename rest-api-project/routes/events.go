@@ -43,9 +43,6 @@ func createEvent(ctx *gin.Context) {
 		return
 	}
 
-	event.ID = 1
-	event.UserID = 1
-
 	err = event.Save()
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"message": "Could not create event. Try again later."})
@@ -92,7 +89,7 @@ func deleteEvent(ctx *gin.Context){
 		return
 	}
 
-	event, err = models.GetEventByID(eventId)
+	event, err := models.GetEventByID(eventId)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"message": "Could not fetch event."})
 		return

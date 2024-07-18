@@ -33,6 +33,7 @@ func (e Event) Save() error {
 	}
 	id, err := result.LastInsertId() // get event.ID
 	e.ID = id
+	// e.UserID = user_id
 	return err
 }
 
@@ -87,7 +88,7 @@ func (event Event) Update() error {
 	return err
 }
 
-func (event Event) Delete(){
+func (event Event) Delete() error{
 	query := "DELETE FROM events WHERE id = ?"
 	stmt, err := db.DB.Prepare(query)
 
@@ -97,6 +98,6 @@ func (event Event) Delete(){
 
 	defer stmt.Close()
 
-	_, err := stmt.Exec(event.ID)
+	_, err = stmt.Exec(event.ID)
 	return err
 }
