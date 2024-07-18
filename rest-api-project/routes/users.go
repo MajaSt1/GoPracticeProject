@@ -4,10 +4,11 @@ import (
 	"net/http"
 
 	"example.com/note/rest-api-project/models"
+	"example.com/note/rest-api-project/utils"
 	"github.com/gin-gonic/gin"
 )
 
-func signup(ctx *gin.Context){
+func signup(ctx *gin.Context) {
 	var user models.User
 	err := ctx.ShouldBindJSON(&user)
 	if err != nil {
@@ -24,7 +25,7 @@ func signup(ctx *gin.Context){
 	ctx.JSON(http.StatusCreated, gin.H{"message": "User created!", "user": user})
 }
 
-func login(ctx *gin.Context){
+func login(ctx *gin.Context) {
 	var user models.User
 	err := ctx.ShouldBindJSON(&user)
 	if err != nil {
@@ -38,5 +39,11 @@ func login(ctx *gin.Context){
 		return
 	}
 
-	ctx.JSON(http.StatusOK, gin.H{"message": "Login successful!"})
+	token, err := utils.GenerateToken(user.Email, user.ID)
+	if err != nil {
+		ctx.JSON(http.StatusUnauthorized, gin.H{"message": "Could not authenicate user."})
+		return
+	}
+
+	ctx.JSON(http.StatusOK, gin.H{"message": "Login successful!", "token": token})
 }

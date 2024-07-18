@@ -8,8 +8,8 @@ import (
 )
 
 type User struct {
-	ID int64
-	Email string `binding:"required"`
+	ID       int64
+	Email    string `binding:"required"`
 	Password string `binding:"required"`
 }
 
@@ -38,14 +38,14 @@ func (u User) Save() error {
 }
 
 func (u User) ValidateCredentials() error {
-	query := "SELECT email, password FROM users WHERE email = ?"
+	query := "SELECT id, password FROM users WHERE email = ?"
 	row := db.DB.QueryRow(query, u.Email) // we know that we query exactly one row
 	var retrievedPwd string
-	err := row.Scan(&retrievedPwd)
+	err := row.Scan(&u.ID, &retrievedPwd)
 	if err != nil {
 		return errors.New("Credentials invalid.")
 	}
-	
+
 	passwotdIsValid := utils.CheckPasswordHash(u.Password, retrievedPwd)
 	if !passwotdIsValid {
 		return errors.New("Credentials invalid.")
