@@ -36,6 +36,12 @@ func getEvent(ctx *gin.Context) {
 }
 
 func createEvent(ctx *gin.Context) {
+	token := ctx.Request.Header.Get("Authorization")
+	if token == "" {
+		ctx.JSON(http.StatusUnauthorized, gin.H{"message": "Not authorized."})
+		return
+	}
+
 	var event models.Event
 	err := ctx.ShouldBindJSON(&event) //store the data in event variable - to make available client must send the same structure of event model
 	if err != nil {
@@ -82,7 +88,7 @@ func updateEvent(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, gin.H{"message": "Event updated successfully."})
 }
 
-func deleteEvent(ctx *gin.Context){
+func deleteEvent(ctx *gin.Context) {
 	eventId, err := strconv.ParseInt(ctx.Param("id"), 10, 64)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"message": "Could not parse event id."})
