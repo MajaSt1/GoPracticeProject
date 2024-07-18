@@ -5,6 +5,7 @@ import (
 	"strconv"
 
 	"example.com/note/rest-api-project/models"
+	"example.com/note/rest-api-project/utils"
 	"github.com/gin-gonic/gin"
 )
 
@@ -42,8 +43,14 @@ func createEvent(ctx *gin.Context) {
 		return
 	}
 
+	err := utils.VerifyToken(token)
+	if err != nil {
+		ctx.JSON(http.StatusUnauthorized, gin.H{"message": "Not authorized."})
+		return
+	}
+
 	var event models.Event
-	err := ctx.ShouldBindJSON(&event) //store the data in event variable - to make available client must send the same structure of event model
+	err = ctx.ShouldBindJSON(&event) //store the data in event variable - to make available client must send the same structure of event model
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"message": "Could not parse request data."})
 		return
